@@ -1,0 +1,36 @@
+default_environment: dev
+project_id: 019b7b5d-eb3c-78ad-b17e-9cd13fa61734
+
+environments:
+- name: dev
+
+plugins:
+  extractors:
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-tap-postgres
+    config:
+      host: ${TAP_POSTGRES_HOST}
+      user: ${TAP_POSTGRES_USER}
+      password: ${TAP_POSTGRES_PASSWORD}
+      database: ${TAP_POSTGRES_DBNAME} # Mudamos de dbname para database aqui
+      port: 5432
+      filter_schemas: [public]
+    select:
+    - 'public-stg_governo_gastos.*'
+
+  loaders:
+  - name: target-s3
+    variant: crowemi
+    pip_url: git+https://github.com/crowemi/target-s3.git
+    config:
+      format:
+        format_type: parquet  # Mudamos de jsonl para parquet
+      cloud_provider:
+        cloud_provider_type: aws
+        aws:
+          aws_bucket: ${TARGET_S3_BUCKET}
+          aws_region: ${TARGET_S3_AWS_REGION}
+          aws_access_key_id: ${TARGET_S3_AWS_ACCESS_KEY_ID}
+          aws_secret_access_key: ${TARGET_S3_AWS_SECRET_ACCESS_KEY}
+      prefix: bronze
