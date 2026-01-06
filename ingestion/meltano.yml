@@ -28,6 +28,7 @@ plugins:
         format_type: parquet  # Mudamos de jsonl para parquet
       max_batch_size: 50000  # Ele só vai para a AWS após juntar 100k linhas
       batch_size_rows: 50000 # Garante que o limite seja respeitado por linha
+      naming_scheme: "{stream_name}/{datestamp}_{timestamp}.parquet"
       cloud_provider:
         cloud_provider_type: aws
         aws:
