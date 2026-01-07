@@ -20,26 +20,16 @@ plugins:
     - 'public-stg_governo_gastos.*'
 
   loaders:
-  - name: target-s3
-    variant: crowemi
-    pip_url: git+https://github.com/crowemi/target-s3.git
+  - name: target-s3-parquet
+    variant: transferwise
+    pip_url: pipelinewise-target-s3
     config:
-      format:
-        format_type: parquet
-        format_parquet:
-          compression: gzip
-      append_date_to_prefix: true
-      append_date_to_prefix_grain: day
-      append_date_to_filename: true
-      append_date_to_filename_grain: day
-      include_process_date: true
-      max_batch_size: 50000 
-      batch_size_rows: 50000
-      cloud_provider:
-        cloud_provider_type: aws
-        aws:
-          aws_bucket: ${TARGET_S3_BUCKET}
-          aws_region: ${TARGET_S3_AWS_REGION}
-          aws_access_key_id: ${TARGET_S3_AWS_ACCESS_KEY_ID}
-          aws_secret_access_key: ${TARGET_S3_AWS_SECRET_ACCESS_KEY}
-      prefix: bronze
+      aws_access_key_id: ${TARGET_S3_AWS_ACCESS_KEY_ID}
+      aws_secret_access_key: ${TARGET_S3_AWS_SECRET_ACCESS_KEY}
+      s3_bucket: ${TARGET_S3_BUCKET}
+      s3_key_prefix: bronze/
+      delimiter: ','
+      quotechar: '"'
+      compression: gzip
+      naming_convention: "{stream}_{timestamp}.parquet"
+      temp_dir: /tmp
