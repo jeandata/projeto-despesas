@@ -7,7 +7,7 @@ environments:
 jobs:
 - name: postgres-to-s3
   tasks:
-  - tap-postgres target-s3-parquet
+  - tap-postgres target-s3
 
 plugins:
   extractors:
@@ -25,7 +25,7 @@ plugins:
     - 'public-stg_governo_gastos.*'
 
   loaders:
-  - name: target-s3-parquet
+  - name: target-s3
     variant: transferwise
     pip_url: pipelinewise-target-s3
     config:
