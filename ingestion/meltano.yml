@@ -13,7 +13,7 @@ plugins:
       host: ${TAP_POSTGRES_HOST}
       user: ${TAP_POSTGRES_USER}
       password: ${TAP_POSTGRES_PASSWORD}
-      database: ${TAP_POSTGRES_DBNAME} # Mudamos de dbname para database aqui
+      database: ${TAP_POSTGRES_DBNAME}
       port: 5432
       filter_schemas: [public]
     select:
@@ -25,10 +25,10 @@ plugins:
     pip_url: git+https://github.com/crowemi/target-s3.git
     config:
       format:
-        format_type: parquet  # Mudamos de jsonl para parquet
-      max_batch_size: 50000  # Ele só vai para a AWS após juntar 100k linhas
-      batch_size_rows: 50000 # Garante que o limite seja respeitado por linha
-      naming_scheme: "{stream_name}/{datestamp}_{timestamp}.parquet"
+        format_type: parquet
+      naming_scheme: "{stream_name}/{datestamp}/{timestamp}_{uuid}"
+      max_batch_size: 10000 
+      batch_size_rows: 10000
       cloud_provider:
         cloud_provider_type: aws
         aws:
