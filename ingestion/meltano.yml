@@ -6,8 +6,8 @@ environments:
 
 jobs:
 - name: postgres-to-s3
-  extractor: tap-postgres
-  loader: target-s3-parquet
+  tasks:
+  - tap-postgres target-s3-parquet
 
 plugins:
   extractors:
