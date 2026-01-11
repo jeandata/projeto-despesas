@@ -1,13 +1,22 @@
 default_environment: dev
-project_id: 019b7b5d-eb3c-78ad-b17e-9cd13fa61734
+project_id: 019bade9-449d-7a3e-a00f-88cfd8b15220
 
 environments:
 - name: dev
+  config:
+    plugins:
+      extractors:
+      - name: tap-postgres
+        select:
+        - '!*.*.*'
+        - public-stg_governo_gastos.*
+        loaders:
+        - name: target-s3
+          config:
+            s3_key_prefix: "dev/bronze/stg_governo_gastos/"
 
-jobs:
-- name: postgres-to-s3
-  tasks:
-  - tap-postgres target-s3
+- name: staging
+- name: prod
 
 plugins:
   extractors:
@@ -15,26 +24,34 @@ plugins:
     variant: meltanolabs
     pip_url: meltanolabs-tap-postgres
     config:
-      host: ${TAP_POSTGRES_HOST}
-      user: ${TAP_POSTGRES_USER}
-      password: ${TAP_POSTGRES_PASSWORD}
-      database: ${TAP_POSTGRES_DBNAME}
+      host: ${PG_HOST}
       port: 5432
-      filter_schemas: [public]
-    select:
-    - 'public-stg_governo_gastos.*'
+      user: ${PG_USER}
+      password: ${PG_PASSWORD}
+      database: ${PG_DATABASE}
 
   loaders:
   - name: target-s3
-    variant: transferwise
-    pip_url: pipelinewise-target-s3
+    variant: crowemi
     config:
-      aws_access_key_id: ${TARGET_S3_AWS_ACCESS_KEY_ID}
-      aws_secret_access_key: ${TARGET_S3_AWS_SECRET_ACCESS_KEY}
-      s3_bucket: ${TARGET_S3_BUCKET}
-      s3_key_prefix: bronze/
-      file_type: parquet
-      compression: gzip
-      naming_convention: "{stream}/year={year}/month={month}/day={day}/{stream}_{timestamp}.parquet"
-      add_metadata_columns: true
-      temp_dir: /tmp
+      # 1. MUDANÇA PARA PARQUET
+      format:
+        format_type: parquet
+      
+      cloud_provider:
+        cloud_provider_type: aws
+        aws:
+          aws_bucket: db-despesas
+          aws_region: us-east-2
+      
+      # 2. CORREÇÃO DO CAMINHO (Removi a barra extra)
+      prefix: "bronze/stg_governo_gastos" 
+      append_date_to_prefix: true
+      partition_name_enabled: true
+      
+      # 3. RESOLUÇÃO DA SOBRESCRITA (Nome do ficheiro com segundos)
+      append_date_to_filename: true
+      append_date_to_filename_grain: second # Adiciona HHMMSS ao nome, impedindo a sobrescrita
+      
+      # 4. AUMENTAR A BATCH (Cabe as 100k linhas num ficheiro só se preferir)
+      max_batch_size: 35000
