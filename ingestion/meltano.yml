@@ -3,6 +3,8 @@ project_id: 019bade9-449d-7a3e-a00f-88cfd8b15220
 
 environments:
 - name: dev
+  env:
+    TZ: "America/Sao_Paulo"
   config:
     plugins:
       extractors:
