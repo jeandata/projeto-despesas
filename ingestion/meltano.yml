@@ -35,8 +35,6 @@ plugins:
   loaders:
   - name: target-s3
     variant: crowemi
-    env:
-      TZ: "America/Sao_Paulo"
     config:
       # 1. MUDANÇA PARA PARQUET
       format:
