@@ -5,8 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10.19"
 dependencies = [
+    "boto3>=1.42.32",
     "meltano>=4.0.8",
     "pandas>=2.3.3",
     "psycopg2-binary>=2.9.11",
     "sqlalchemy>=2.0.45",
+    "streamlit>=1.53.0",
 ]
