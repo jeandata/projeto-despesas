@@ -8,7 +8,7 @@ AGENT_ALIAS_ID = "TSTALIASID" # Use o ID do seu Alias
 REGION = "us-east-2"
 
 st.set_page_config(page_title="IA de Despesas Públicas", page_icon="📊")
-st.title("📊 Consultor de Despesas (SQL)")
+st.title("📊 Realize sua consulta sobre as despesas públicas")
 
 # Inicializa o histórico de chat na sessão do navegador
 if "messages" not in st.session_state:
