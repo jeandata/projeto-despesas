@@ -59,7 +59,7 @@ TABLE_NAME = "tb_stg_governo_gastos"
 
 BRONZE_BASE = f"s3://{BUCKET_NAME}/bronze/stg_governo_gastos/public-stg_governo_gastos"
 SILVER_PATH = f"s3://{BUCKET_NAME}/silver/stg_governo_gastos"
-WAREHOUSE_ROOT = f"s3://{BUCKET_NAME}/warehouse"
+WAREHOUSE_ROOT = f"s3://{BUCKET_NAME}/silver"
 DATABASE_LOCATION = f"{WAREHOUSE_ROOT}/{GLUE_DATABASE}.db"
 
 conf = SparkConf()
