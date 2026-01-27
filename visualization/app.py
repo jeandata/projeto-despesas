@@ -2,7 +2,7 @@ import streamlit as st
 import boto3
 import uuid
 import os
-# Configurações do Agente (Pegue no Console do Bedrock)
+
 AGENT_ID = os.getenv('AGENT_ID')  # Use o ID do seu Agente
 AGENT_ALIAS_ID = os.getenv('AGENT_ALIAS_ID') # Use o ID do seu Alias
 REGION = "us-east-2"

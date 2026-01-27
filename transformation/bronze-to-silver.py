@@ -7,7 +7,6 @@ from awsglue.utils import getResolvedOptions
 from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
-# Imports essenciais para limpeza de texto e moeda
 from pyspark.sql.functions import col, split, current_timestamp, regexp_replace, trim
 from pyspark.sql.types import IntegerType, DecimalType
 from pyspark.sql import SparkSession

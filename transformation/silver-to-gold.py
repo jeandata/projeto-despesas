@@ -144,7 +144,6 @@ else:
 
 # --- B. CRIAR DIMENSÃO TEMPO (dim_tempo) ---
 print("[INFO] Criando dim_tempo...")
-# Concatenação corrigida para Spark SQL
 df_dim_tempo = df_silver.select("ano", "mes").distinct() \
     .withColumn("data_ref", to_date(col("ano").cast("string"), "yyyy")) \
     .withColumn("semestre", (col("mes") > 6).cast("int") + 1) \
