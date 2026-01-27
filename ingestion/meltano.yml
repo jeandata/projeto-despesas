@@ -36,7 +36,6 @@ plugins:
   - name: target-s3
     variant: crowemi
     config:
-      # 1. MUDANÇA PARA PARQUET
       format:
         format_type: parquet
       
@@ -45,15 +44,9 @@ plugins:
         aws:
           aws_bucket: db-despesas
           aws_region: us-east-2
-      
-      # 2. CORREÇÃO DO CAMINHO (Removi a barra extra)
       prefix: "bronze/stg_governo_gastos" 
       append_date_to_prefix: true
       partition_name_enabled: true
-      
-      # 3. RESOLUÇÃO DA SOBRESCRITA (Nome do ficheiro com segundos)
       append_date_to_filename: true
-      append_date_to_filename_grain: second # Adiciona HHMMSS ao nome, impedindo a sobrescrita
-      
-      # 4. AUMENTAR A BATCH (Cabe as 100k linhas num ficheiro só se preferir)
+      append_date_to_filename_grain: second
       max_batch_size: 35000

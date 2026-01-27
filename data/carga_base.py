@@ -13,7 +13,7 @@ def carregar_com_auditoria(caminho_pasta, engine):
     arquivos = glob.glob(os.path.join(caminho_pasta, "*.csv"))
     
     if not arquivos:
-        print(f"⚠️ Nenhum arquivo CSV encontrado em: {caminho_pasta}")
+        print(f"Nenhum arquivo CSV encontrado em: {caminho_pasta}")
         return
 
     for arquivo_path in arquivos:

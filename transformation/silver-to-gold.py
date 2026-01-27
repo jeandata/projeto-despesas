@@ -20,14 +20,7 @@ def get_brasilia_date():
     return datetime.datetime.now() - datetime.timedelta(hours=3)
 
 def delete_all_folder_markers_recursive(bucket_name, prefix):
-    """
-    Varre recursivamente o prefixo e deleta arquivos _$folder$.
-    Remove a barra final do prefixo para garantir que pegue o marcador da pasta raiz.
-    """
     s3 = boto3.client('s3')
-    
-    # TRUQUE: Remove a barra do final (ex: "gold/" vira "gold")
-    # Isso garante que ele pegue 'gold_$folder$' E 'gold/tabela_$folder$'
     clean_prefix = prefix.rstrip('/')
     
     print(f"[INFO] Varrendo marcadores em: s3://{bucket_name}/{clean_prefix}*")
@@ -56,7 +49,6 @@ def delete_all_folder_markers_recursive(bucket_name, prefix):
         print("[INFO] Nenhum marcador encontrado com este prefixo.")
 
 def ensure_database_exists(database_name, warehouse_uri):
-    """Cria o database via Boto3 para evitar erro de Path do Spark"""
     glue = boto3.client('glue')
     try:
         glue.get_database(Name=database_name)
@@ -74,7 +66,6 @@ def ensure_database_exists(database_name, warehouse_uri):
 # ============================================================================
 
 def save_delta_table(df, database, table_name, s3_path, partition_cols=None):
-    """Escreve Delta no S3 e registra no Glue"""
     print(f"[INFO] Processando tabela: {table_name}")
     
     writer = df.write.format("delta").mode("overwrite") \

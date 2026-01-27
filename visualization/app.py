@@ -1,14 +1,14 @@
 import streamlit as st
 import boto3
 import uuid
-
+import os
 # Configurações do Agente (Pegue no Console do Bedrock)
-AGENT_ID = "FTADGEDRB9" 
-AGENT_ALIAS_ID = "TSTALIASID" # Use o ID do seu Alias
+AGENT_ID = os.getenv('AGENT_ID')  # Use o ID do seu Agente
+AGENT_ALIAS_ID = os.getenv('AGENT_ALIAS_ID') # Use o ID do seu Alias
 REGION = "us-east-2"
 
 st.set_page_config(page_title="IA de Despesas Públicas", page_icon="📊")
-st.title("📊 Realize sua consulta sobre as despesas públicas")
+st.title("Realize sua consulta sobre as despesas públicas")
 
 # Inicializa o histórico de chat na sessão do navegador
 if "messages" not in st.session_state:
@@ -30,7 +30,7 @@ if prompt := st.chat_input("Ex: Qual o valor total pago em 2025?"):
 
     # Chamada ao Bedrock Agent
     with st.chat_message("assistant"):
-        with st.spinner("Consultando Athena..."):
+        with st.spinner("Consultando..."):
             try:
                 client = boto3.client("bedrock-agent-runtime", region_name=REGION)
                 

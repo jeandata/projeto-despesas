@@ -34,7 +34,6 @@ def find_date_column(columns):
     for pattern in patterns:
         matches = [c for c in columns if pattern(c)]
         if matches: return matches[0]
-    # Se não achar, usa a primeira coluna que tiver 'data' ou retorna None (para não quebrar)
     return columns[0] 
 
 def ensure_database_exists(database_name, warehouse_uri):
@@ -133,7 +132,7 @@ try:
     
     df_silver = df.select(*final_cols)
 
-    # 4. Escrita (SEM PARTIÇÃO)
+    # 4. Escrita
     print(f"[INFO] Escrevendo Delta em: {SILVER_PATH}")
     
     df_silver.write \
@@ -142,11 +141,10 @@ try:
         .option("mergeSchema", "true") \
         .option("overwriteSchema", "false") \
         .save(SILVER_PATH) 
-        # REMOVIDO: .partitionBy("ano", "mes") - Isso evita o erro!
         
     print(f"[SUCESSO] Arquivos salvos.")
 
-    # 5. Registro SQL (SEM PARTIÇÃO)
+    # 5. Registro SQL
     spark.sql(f"DROP TABLE IF EXISTS {GLUE_DATABASE}.{TABLE_NAME}")
     
     sql_create = f"""
@@ -154,8 +152,6 @@ try:
         USING DELTA
         LOCATION '{SILVER_PATH}'
     """
-    # REMOVIDO: PARTITIONED BY ...
-    
     print(f"[INFO] Executando SQL: {sql_create}")
     spark.sql(sql_create)
     
