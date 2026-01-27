@@ -1,6 +1,6 @@
-# 📊 Projeto de Análise de Despesas Públicas
+# Projeto de Análise de Despesas Públicas
 
-## 📋 Visão Geral
+## - Visão Geral
 
 Este projeto tem como objetivo extrair, transformar e disponibilizar dados de despesas do governo brasileiro através de uma plataforma de análise inteligente. O sistema utiliza tecnologias modernas de processamento de dados e inteligência artificial para tornar as informações sobre gastos públicos mais acessíveis e compreensíveis.
 
@@ -10,13 +10,13 @@ Este projeto tem como objetivo extrair, transformar e disponibilizar dados de de
 2. **Transforma** os dados usando Apache Spark no AWS Glue, organizando-os em camadas (Bronze, Silver e Gold)
 3. **Disponibiliza** os dados através de uma interface web com inteligência artificial, permitindo que usuários façam perguntas em linguagem natural sobre as despesas públicas
 
-### Arquitetura
+### - Arquitetura
 
 A arquitetura completa do projeto está documentada no arquivo `Arquitetura.drawio.png` na raiz do projeto. O sistema segue uma arquitetura em camadas (medallion architecture) que garante qualidade e organização dos dados.
 
 ---
 
-## 🔄 Ingestão de Dados
+## - Ingestão de Dados
 
 A etapa de ingestão é responsável por coletar os dados brutos da fonte e armazená-los na camada Bronze do S3.
 
@@ -46,7 +46,7 @@ O arquivo `meltano.yml` contém toda a configuração necessária:
 - **Extrator**: `tap-postgres` (extrai dados do PostgreSQL)
 - **Carregador**: `target-s3` (carrega dados no S3)
 - **Formato**: Parquet (otimizado para análise)
-- **Particionamento**: Por data (year/month/day)
+- **Particionamento**: Por data de extração (year/month/day)
 
 ### Execução
 
@@ -58,7 +58,7 @@ meltano run tap-postgres target-s3
 
 ---
 
-## ⚙️ Transformação de Dados
+## - Transformação de Dados
 
 A transformação é realizada em duas etapas principais, utilizando Apache Spark no AWS Glue. Os dados passam por três camadas: Bronze → Silver → Gold.
 
@@ -106,11 +106,11 @@ transformation/
 
 ### Execução
 
-Os jobs são executados no AWS Glue. Cada job pode ser agendado ou executado manualmente através do console do AWS Glue ou via API.
+Os jobs são executados no AWS Glue. Cada job pode ser agendado com o Stepfunction ou executado manualmente através do console do AWS Glue ou via API.
 
 ---
 
-## 🎨 Visualização e Interface com IA
+## - Visualização e Interface com IA
 
 A visualização é feita através de uma aplicação web desenvolvida em Streamlit que utiliza inteligência artificial para responder perguntas sobre as despesas públicas.
 
@@ -155,61 +155,39 @@ A aplicação pode ser executada em uma instância EC2 ou em um serviço de cont
 
 ---
 
-## ☁️ Configuração de Ambientes AWS
+## - Configuração de Ambientes AWS
 
 Esta seção descreve os recursos AWS necessários para o funcionamento completo do projeto. Os detalhes específicos de cada ambiente devem ser preenchidos conforme a configuração real.
 
-### 🖥️ Instância EC2 - Ingestão
+### -- Instância EC2 - Ingestão
 
 **Propósito**: Executar o processo de ingestão de dados usando Meltano.
 
 **Configurações necessárias:**
-- [ ] Tipo de instância: _______________
-- [ ] Sistema operacional: _______________
-- [ ] Tamanho do disco: _______________
-- [ ] Security Group: _______________
-  - [ ] Regras de entrada: _______________
-  - [ ] Regras de saída: _______________
-- [ ] IAM Role: _______________
-  - [ ] Permissões S3: _______________
-  - [ ] Permissões RDS/PostgreSQL: _______________
-- [ ] Variáveis de ambiente configuradas:
-  - [ ] `PG_HOST`: _______________
-  - [ ] `PG_USER`: _______________
-  - [ ] `PG_PASSWORD`: _______________
-  - [ ] `PG_DATABASE`: _______________
+- [ ] Tipo de instância: m7i-flex.large
+- [ ] Sistema operacional: Amazon 2023 - Linux
+- [ ] Tamanho do disco: 200 GB
 - [ ] Software instalado:
-  - [ ] Python: _______________
-  - [ ] Meltano: _______________
-  - [ ] Plugins Meltano: _______________
+  - [ ] Python
+  - [ ] Meltano
+  - [ ] Plugins Meltano
+  - [ ] Git
 
-### 🖥️ Instância EC2 - Visualização
+### -- Instância EC2 - Visualização
 
 **Propósito**: Hospedar a aplicação Streamlit de visualização.
 
 **Configurações necessárias:**
-- [ ] Tipo de instância: _______________
-- [ ] Sistema operacional: _______________
-- [ ] Tamanho do disco: _______________
-- [ ] Security Group: _______________
-  - [ ] Regras de entrada (porta 8501 para Streamlit): _______________
-  - [ ] Regras de saída: _______________
-- [ ] IAM Role: _______________
-  - [ ] Permissões Bedrock: _______________
-  - [ ] Permissões S3 (se necessário): _______________
-  - [ ] Permissões Glue (se necessário): _______________
-- [ ] Variáveis de ambiente configuradas:
-  - [ ] `AGENT_ID`: _______________
-  - [ ] `AGENT_ALIAS_ID`: _______________
+- [ ] Tipo de instância: t3.micro
+- [ ] Sistema operacional: Amazon 2023 - Linux
+- [ ] Tamanho do disco: 32GB
 - [ ] Software instalado:
-  - [ ] Python: _______________
-  - [ ] Streamlit: _______________
-  - [ ] boto3: _______________
-- [ ] Configuração de serviço (systemd/supervisor):
-  - [ ] Nome do serviço: _______________
-  - [ ] Comando de inicialização: _______________
+  - [ ] Python:
+  - [ ] Streamlit:
+  - [ ] boto3:
 
-### 🔧 AWS Glue
+
+### - AWS Glue
 
 **Propósito**: Executar os jobs de transformação de dados (Bronze → Silver → Gold).
 
@@ -233,125 +211,137 @@ Esta seção descreve os recursos AWS necessários para o funcionamento completo
   - [ ] `ft_despesas`
 
 #### Glue Job - Bronze to Silver
-- [ ] Nome do job: _______________
+- [ ] Nome do job: job-despesas-bronze-to-silver
 - [ ] Tipo: Spark
-- [ ] Versão do Glue: _______________
-- [ ] Número de workers: _______________
-- [ ] Tipo de worker: _______________
-- [ ] Script S3: `s3://_____________/transformation/bronze-to-silver.py`
-- [ ] IAM Role: _______________
-  - [ ] Permissões S3 (read/write): _______________
-  - [ ] Permissões Glue Catalog: _______________
+- [ ] Versão do Glue: 5.0
+- [ ] Número de workers: 2
+- [ ] Tipo de worker: G 1x
 - [ ] Parâmetros do job:
-  - [ ] `--JOB_NAME`: _______________
-- [ ] Agendamento (opcional):
-  - [ ] Frequência: _______________
-  - [ ] Horário: _______________
+  - [ ] `--datalake-formats`: delta
+- [ ] Agendamento (Stepfunction):
+  - [ ] Frequência: Diário
+  - [ ] Horário: 09:00
 
 #### Glue Job - Silver to Gold
-- [ ] Nome do job: _______________
+- [ ] Nome do job: job-despesas-silver-to-gold
 - [ ] Tipo: Spark
-- [ ] Versão do Glue: _______________
-- [ ] Número de workers: _______________
-- [ ] Tipo de worker: _______________
-- [ ] Script S3: `s3://_____________/transformation/silver-to-gold.py`
-- [ ] IAM Role: _______________
-  - [ ] Permissões S3 (read/write): _______________
-  - [ ] Permissões Glue Catalog: _______________
+- [ ] Versão do Glue: 5.0
+- [ ] Número de workers: 2
+- [ ] Tipo de worker: G 1x
 - [ ] Parâmetros do job:
-  - [ ] `--JOB_NAME`: _______________
-- [ ] Agendamento (opcional):
-  - [ ] Frequência: _______________
-  - [ ] Horário: _______________
+  - [ ] `--datalake-formats`: delta
+- [ ] Agendamento (Stepfunction):
+  - [ ] Frequência: Diário
+  - [ ] Horário: Após terminar o Bronze to Silver
 
-#### Dependências
-- [ ] Delta Lake JAR: `s3://_____________/jars/delta-core_2.12-2.x.x.jar`
-- [ ] Outras dependências: _______________
-
-### ⚡ AWS Lambda
-
-**Propósito**: Orquestração e automação de processos (opcional, se necessário).
+### - AWS Lambda
 
 **Configurações necessárias:**
 
-#### Lambda Function 1 (se aplicável)
-- [ ] Nome da função: _______________
-- [ ] Runtime: Python _______________
-- [ ] Handler: _______________
-- [ ] Timeout: _______________
-- [ ] Memória: _______________
-- [ ] IAM Role: _______________
-  - [ ] Permissões: _______________
-- [ ] Variáveis de ambiente:
-  - [ ] _______________
-- [ ] Triggers:
-  - [ ] EventBridge (CloudWatch Events): _______________
-  - [ ] S3 Event: _______________
-  - [ ] Outros: _______________
+#### Lambda Function
+- [ ] Nome da função: consulta-despesas
+- [ ] Runtime: Python 3.9
+- [ ] Handler: lambda_handler
+- [ ] Timeout: 5 min
+- [ ] Memória: 128MB
+- [ ] IAM Role: PermissaoBedrockAgent
+  - [ ] Permissões: lambda:InvokeFunction
 
-#### Lambda Function 2 (se aplicável)
-- [ ] Nome da função: _______________
-- [ ] Runtime: Python _______________
-- [ ] Handler: _______________
-- [ ] Timeout: _______________
-- [ ] Memória: _______________
-- [ ] IAM Role: _______________
-  - [ ] Permissões: _______________
-- [ ] Variáveis de ambiente:
-  - [ ] _______________
-- [ ] Triggers:
-  - [ ] EventBridge (CloudWatch Events): _______________
-  - [ ] S3 Event: _______________
-  - [ ] Outros: _______________
 
-### 🤖 AWS Bedrock
+### - AWS Bedrock
 
 **Propósito**: Fornecer a capacidade de IA generativa para responder perguntas sobre os dados.
 
 **Configurações necessárias:**
 
 #### Modelo Base
-- [ ] Modelo utilizado: _______________ (ex: Claude 3 Sonnet, Claude 3 Haiku)
-- [ ] Região: `us-east-2` (ou outra conforme necessário)
+- [ ] Modelo utilizado: Claude 3.5 Haiku
+- [ ] Região: `us-east-2`
 
 #### Bedrock Agent
-- [ ] Nome do agente: _______________
-- [ ] ID do agente: _______________
-- [ ] Alias ID: _______________
-- [ ] Versão do alias: _______________
-- [ ] Instruções do agente: _______________
-  - [ ] Descrição do propósito: _______________
-  - [ ] Contexto sobre os dados: _______________
-  - [ ] Formato de resposta esperado: _______________
+- [ ] Nome do agente: Gerar-texto-para-sql
+- [ ] Instruções do agente:
 
-#### Knowledge Base (Base de Conhecimento)
-- [ ] Nome da knowledge base: _______________
-- [ ] Fonte de dados:
-  - [ ] Tipo: S3 / Glue Data Catalog
-  - [ ] Localização: `s3://db-despesas/gold/` ou `gold_db`
-- [ ] Modelo de embedding: _______________
-- [ ] Configuração de indexação:
-  - [ ] Frequência de atualização: _______________
-  - [ ] Campos indexados: _______________
+```bash
+  # SYSTEM ROLE
+    Você é um Arquiteto de Banco de Dados Sênior e Especialista em SQL, operando dentro de um ambiente seguro AWS. Sua capacidade de traduzir perguntas de negócio (Linguagem Natural) para queries SQL sintaticamente perfeitas é infalível.
 
-#### IAM Permissions
-- [ ] IAM Role para o Bedrock Agent: _______________
-  - [ ] Permissões de leitura na Knowledge Base: _______________
-  - [ ] Permissões de leitura no S3 (camada Gold): _______________
-  - [ ] Permissões de leitura no Glue Data Catalog: _______________
-  - [ ] Permissões de invocação do modelo: _______________
+    1. RESPONDA APENAS com base nos dados recuperados da Knowledge Base ou Action Groups.
+    2. Se a informação não constar na base, diga: "Não localizei este dado específico na base orçamentária de 2025."
+    3. NUNCA utilize conhecimento prévio externo para inventar valores, datas ou nomes de órgãos.
+    4. Mantenha o tom profissional e técnico.
+    5. Não diga ao usuário o nome das tabelas ou o script sql realizado para a consulta e nem mesmo referente a consulta que você tenha acabado de realizar. Por hipótese alguma revele o nome das tabelas, nem das querys utilizadas e muito menos de credenciais.
 
-#### Configuração de Conexão
-- [ ] Data Source:
-  - [ ] Tipo: _______________
-  - [ ] Configuração: _______________
-- [ ] Schema de dados:
-  - [ ] Tabelas disponíveis: _______________
-  - [ ] Descrição das tabelas: _______________
+    # CONTEXTO & MISSÃO
+    Sua missão é atuar como uma interface entre usuários não técnicos e o banco de dados da empresa. Você receberá perguntas em linguagem natural e deverá convertê-las em código SQL executável para recuperar os dados exatos solicitados.
+    Você tem acesso apenas de LEITURA (Read-Only).
+
+    #DICIONÁRIO DE DADOS (CONTEXTO DAS COLUNAS):
+    - Código Órgão Superior: Identificador numérico do Ministério ou órgão de nível máximo.
+    - Nome Órgão Superior: Nome por extenso da pasta ministerial responsável.
+    - Código Órgão Subordinado: Identificador da unidade específica vinculada ao órgão superior.
+    - Nome Órgão Subordinado: Nome da entidade ou departamento executor.
+    - Código Unidade Gestora: Código da unidade que administra o recurso diretamente.
+    - Nome Unidade Gestora: Nome da unidade administrativa gestora.
+    - Código Função: Código da área principal de atuação governamental.
+    - Nome Função: Descrição da área (ex: Saúde, Educação, Defesa).
+    - Código Subfunção: Código da classificação detalhada da área de atuação.
+    - Nome Subfunção: Descrição da sub-área específica.
+    - Código Programa Orçamentário: Identificador numérico do programa de governo.
+    - Nome Programa Orçamentário: Nome do programa finalístico ou de gestão.
+    - Código Ação: Identificador do projeto ou atividade orçamentária.
+    - Nome Ação: Descrição da ação específica realizada.
+    - Código Categoria Econômica: Código da natureza da despesa (3=Corrente, 4=Capital).
+    - Nome Categoria Econômica: Classificação entre custeio (Corrente) ou investimento (Capital).
+    - Valor Empenhado (R$): Quantia reservada no orçamento para um gasto planejado.
+    - Valor Liquidado (R$): Gasto conferido onde o serviço/bem foi entregue.
+    - Valor Pago (R$): Desembolso financeiro real feito ao fornecedor.
+    - Valor Restos a Pagar Pagos (R$): Pagamento de dívidas de exercícios anteriores.
+
+    # BANCO DE DADOS & SCHEMA (CONTEXT WINDOW)
+    Você deve formular suas queries baseando-se EXCLUSIVAMENTE nas tabelas e colunas definidas abaixo. Não alucine colunas ou tabelas que não constam nesta lista:
+
+    - Tabela: dim_gestao (id_gestao, nome_gestao)
+    - Tabela: dim_orgao (id_orgao, nome_orgao,)
+    - Tabela: dim_tempo (ano, mes, data_ref, semestre)
+    - Tabela: dim_unidade_gestora (id_unidade_gestora, nome_unidade_gestora)
+    - Tabela: dim_unidade_orcamentaria (id_unidade_orcamentaria, nome_unidade_orcamentaria)
+    - Tabela: ft_despesas (ano, mes, id_orgao, id_gestao, id_unidade_gestora, id_unidade_orcamentaria, vl_restos_a_pagar_cancelado_r,  vl_restos_a_pagar_pagos_r, vl_liquidado_r, vl_pago_r, vl_empenhado_r, vl_restos_a_pagar_inscritos_r,  dt_carga)
+
+
+    # STEPS (CHAIN OF THOUGHT)
+    Antes de gerar a resposta final, processe o pedido seguindo estas etapas dentro de tags <thinking>:
+    1.  **Análise de Intenção:** O que o usuário realmente quer? Identifique as entidades (tabelas) e métricas (colunas) envolvidas.
+    2.  **Mapeamento de Schema:** Verifique se as colunas necessárias existem no Schema fornecido. Se uma coluna não existir, NÃO a invente; tente inferir a lógica com os dados existentes ou peça esclarecimento.
+    3.  **Lógica de Junção (JOIN):** Determine a chave primária e estrangeira corretas para unir as tabelas. Nunca faça um produto cartesiano (cross join) sem necessidade.
+    4.  **Segurança & Filtros:** Aplique filtros temporais se solicitado. Adicione `LIMIT` se a query puder retornar milhares de linhas sem necessidade explícita.
+    5.  **Verificação de Sintaxe:** Garanta que a query é válida para o dialeto SQL especificado (ex: PostgreSQL, MySQL, Athena).
+
+    # REGRAS & RESTRIÇÕES (GUARDRAILS)
+    - **REGRA DE OURO (SEGURANÇA):** Gere APENAS comandos `SELECT`. É estritamente PROIBIDO gerar comandos DML/DDL de modificação (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `TRUNCATE`). Se o usuário pedir isso, recuse educadamente.
+    - **Prevenção de Alucinação:** Nunca use nomes de colunas ou tabelas que não estejam explicitamente no DDL/Schema fornecido acima.
+    - **Performance:** Sempre use `LIMIT 100` a menos que o usuário especifique "todos" ou uma quantidade diferente.
+    - **Ambiguidade:** Se a pergunta do usuário for vaga (ex: "me mostre os dados ruins"), não adivinhe. Retorne uma pergunta pedindo para definir o que é "ruim" (ex: "Você se refere a pedidos cancelados ou reclamações?").
+    - **Formatação:** Use formatação padrão SQL (palavras-chave em MAIÚSCULAS).
+
+    # FORMATO DE SAÍDA
+    Retorne **apenas** o resultado. Pode haver explicações verbosas antes ou depois
+
+    Exemplo de Output esperado:
+    ```O total de de despesas empenhadas no mês de novembro foi de R$1,00.;
+  ```
+
+#### Grupo de ação
+- [ ] Nome do grupo de ação: ConsultarDespesas
+- [ ] Tipo do grupo de ação: Definir com detalhes da função
+- [ ] Invocação do grupo de ação: Selecione uma função do Lambda existente
+- [ ] Função do grupo de ação 1 : consultar:
+  - [ ] Nome: consultar
+  - [ ] Parâmetros: Nome=query/Descrição=Query SQL completa para executar/Tipo=String/Obrigatório=True
 
 ---
 
-## 📦 Estrutura do Projeto
+## - Estrutura do Projeto
 
 ```
 Despesas/
@@ -368,12 +358,14 @@ Despesas/
 │   ├── bronze-to-silver.py    # Transformação Bronze → Silver
 │   └── silver-to-gold.py      # Transformação Silver → Gold
 └── visualization/             # Interface de visualização
+    ├── lambda/                # Script lambda
+    |   └── lambda.py  .py     # Lambda para consultar S3
     └── app.py                 # Aplicação Streamlit
 ```
 
 ---
 
-## 🚀 Como Começar
+## - Como Começar
 
 1. **Configure os ambientes AWS** conforme a seção de configuração acima
 2. **Execute a ingestão** na instância EC2 de ingestão
@@ -383,15 +375,9 @@ Despesas/
 
 ---
 
-## 📝 Notas Importantes
+## - Notas Importantes
 
 - Os dados são armazenados no bucket S3 `db-despesas` na região `us-east-2`
 - O formato Delta Lake é utilizado nas camadas Silver e Gold para melhor performance e controle de versão
 - A aplicação de visualização requer que o Bedrock Agent esteja configurado e acessível
 - As permissões IAM devem ser configuradas corretamente para cada serviço acessar os recursos necessários
-
----
-
-## 📧 Contato e Suporte
-
-Para dúvidas ou suporte sobre este projeto, consulte a documentação específica de cada módulo ou entre em contato com a equipe responsável.
