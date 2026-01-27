@@ -12,6 +12,7 @@ Este projeto tem como objetivo extrair, transformar e disponibilizar dados de de
 
 ### - Arquitetura
 
+![Arquitetura](./Arquitetura.drawio.png)
 A arquitetura completa do projeto está documentada no arquivo `Arquitetura.drawio.png` na raiz do projeto. O sistema segue uma arquitetura em camadas (medallion architecture) que garante qualidade e organização dos dados.
 
 ---
