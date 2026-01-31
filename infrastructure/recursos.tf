@@ -102,7 +102,7 @@ resource "aws_s3_bucket" "datalake_bucket" {
 }
 
 resource "aws_instance" "ec2_meltano" {
-  ami           = "ami-06f1fc9ae5ae7f31e" # Idealmente usar data.aws_ami aqui
+  ami           = "ami-06f1fc9ae5ae7f31e"
   instance_type = "m7i-flex.large"
   key_name      = "ec2-ing"
   subnet_id     = "subnet-097ad93f42032be8a"
