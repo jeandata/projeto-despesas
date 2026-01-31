@@ -342,12 +342,109 @@ Esta seção descreve os recursos AWS necessários para o funcionamento completo
 
 ---
 
+## - Infraestrutura com Terraform
+
+O projeto utiliza **Terraform** para criar e gerenciar os recursos na AWS de forma automatizada e reproduzível. Assim, é possível subir o ambiente (Glue, Bedrock Agent, etc.) sem configurar tudo manualmente no console.
+
+### O que o Terraform faz neste projeto?
+
+- **AWS Glue**: Cria os jobs de transformação (Bronze → Silver e Silver → Gold), apontando para os scripts no S3 e configurando workers, tempo de execução e argumentos.
+- **AWS Bedrock Agent**: Provisiona o agente de IA (Text-to-SQL), com instruções, modelo base e configurações de sessão.
+- **Outros recursos**: Conforme definido em `infrastructure/recursos.tf`, podem ser criados buckets, roles e demais dependências necessárias.
+
+Os arquivos de infraestrutura ficam na pasta `infrastructure/` na raiz do projeto.
+
+### Pré-requisitos
+
+Antes de aplicar o Terraform, você precisa:
+
+1. **Terraform instalado** (versão >= 1.2).  
+   - Download: [terraform.io/downloads](https://www.terraform.io/downloads)  
+   - Ou via gerenciador de pacotes (Chocolatey, winget, etc.) no Windows.
+
+2. **Credenciais AWS configuradas** no ambiente onde o Terraform será executado. A forma mais comum é usar o **AWS CLI** (veja a seção abaixo).
+
+3. **Recursos pré-existentes** que o código referencia (por exemplo: bucket de assets do Glue, roles IAM como `Glue-Spark-Despesas-Role` e `AmazonBedrockExecutionRoleForAgents_*`). Ajuste os ARNs em `recursos.tf` ou em variáveis conforme o que já existir na sua conta.
+
+### Como aplicar o Terraform para criar as estruturas na AWS
+
+1. **Entre na pasta de infraestrutura:**
+   ```bash
+   cd infrastructure
+   ```
+
+2. **Inicialize o Terraform** (baixa o provider da AWS e prepara o backend):
+   ```bash
+   terraform init
+   ```
+
+3. **Revise o plano** para ver exatamente o que será criado ou alterado:
+   ```bash
+   terraform plan
+   ```
+   - Confira se a região (`us-east-2` no `main.tf`) e as variáveis em `variables.tf` estão corretas.
+   - Se usar backend remoto (S3 + DynamoDB), configure antes em um bloco `backend` em `terraform.tf`.
+
+4. **Aplique as mudanças** para criar ou atualizar os recursos na AWS:
+   ```bash
+   terraform apply
+   ```
+   - O Terraform mostrará o plano novamente e pedirá confirmação (`yes`) para executar.
+   - Após o `apply`, os jobs do Glue e o agente do Bedrock (conforme definido nos `.tf`) estarão disponíveis na sua conta.
+
+5. **Uso posterior:**
+   - Para novas alterações: edite os arquivos `.tf`, rode `terraform plan` e depois `terraform apply`.
+   - Para destruir todos os recursos gerenciados por esse projeto: `terraform destroy` (use com cuidado).
+
+**Dica:** Mantenha o `terraform.tfstate` em um backend remoto (por exemplo S3) em ambientes compartilhados ou em CI/CD, para evitar conflitos e perda de estado.
+
+### Instalação do AWS CLI
+
+O Terraform usa as credenciais da AWS do ambiente. A maneira mais simples é instalar e configurar o **AWS CLI**.
+
+- **Windows (instalador MSI):**  
+  - Baixe o instalador em: [AWS CLI - Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-windows)  
+  - Execute o MSI e siga o assistente. Depois, abra um novo terminal.
+
+- **Windows (via pip):**
+  ```bash
+  pip install awscli
+  ```
+
+- **Linux/macOS:**
+  ```bash
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  ```
+  (No macOS, pode-se usar também `brew install awscli`.)
+
+Depois de instalar, configure as credenciais:
+
+```bash
+aws configure
+```
+
+Informe:
+- **AWS Access Key ID** e **Secret Access Key** (de um usuário IAM com permissão para Glue, Bedrock, IAM, etc.).
+- **Default region name**: por exemplo `us-east-2`, para bater com o `main.tf`.
+
+O Terraform, ao rodar nessa máquina, usará essas credenciais automaticamente. Em servidores ou CI/CD, use variáveis de ambiente (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`) ou IAM roles quando aplicável.
+
+---
+
 ## - Estrutura do Projeto
 
 ```
 Despesas/
 ├── Arquitetura.drawio.png    # Diagrama de arquitetura
 ├── README.md                  # Este arquivo
+├── infrastructure/            # Terraform (Glue, Bedrock, etc.)
+│   ├── main.tf                # Provider AWS e data sources
+│   ├── terraform.tf           # Backend e versões
+│   ├── variables.tf           # Variáveis do projeto
+│   ├── data.tf                # Dados (account, região)
+│   └── recursos.tf            # Recursos Glue e Bedrock
 ├── data/                      # Dados iniciais e scripts de carga
 │   ├── *.csv                  # Arquivos CSV de despesas
 │   ├── carga_base.py          # Script para carregar dados no PostgreSQL
